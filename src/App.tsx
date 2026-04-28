@@ -30,8 +30,8 @@ import GenericMissionPage from "./components/GenericMissionPage"
 import ActivityLogPage from "./components/ActivityLogPage"
 import FeaturesPage from "./components/FeaturesPage"
 import LoadingScreen from "./components/LoadingScreen"
-import ThemeSwitchDemo from "./components/ThemeSwitchDemo"
-import ProgressionShowcase from "./components/ProgressionShowcase"
+const ThemeSwitchDemo = React.lazy(() => import("./components/ThemeSwitchDemo"))
+const ProgressionShowcase = React.lazy(() => import("./components/ProgressionShowcase"))
 import PricingPage from "./components/PricingPage"
 import { AnimatedThemeToggler } from "./components/ui/animated-theme-toggler"
 import { LanguageProvider, useLanguage } from "./contexts/LanguageContext"
@@ -221,7 +221,7 @@ function ScrollToTop() {
 
 function App({ isAuthenticated, handleLogin, handleLogout }: { isAuthenticated: boolean, handleLogin: (user?: any) => void, handleLogout: () => void }) {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const isProfileIncomplete = React.useMemo(() => {
+  const isOnboardingRequired = React.useMemo(() => {
     if (!user || Object.keys(user).length === 0) return false;
     if (user.role === 'volunteer') {
       return !user.skills || user.skills.length === 0;
@@ -306,8 +306,22 @@ function App({ isAuthenticated, handleLogin, handleLogout }: { isAuthenticated: 
             element={isAuthenticated ? <AppLayout onLogout={handleLogout}><ProfilePage /></AppLayout> : <Navigate to="/signin" />} 
           />
 
-          <Route path="/theme-demo" element={<ThemeSwitchDemo />} />
-          <Route path="/progression" element={<ProgressionShowcase />} />
+          <Route 
+            path="/theme-demo" 
+            element={
+              <React.Suspense fallback={<LoadingScreen onComplete={() => {}} />}>
+                <ThemeSwitchDemo />
+              </React.Suspense>
+            } 
+          />
+          <Route 
+            path="/progression" 
+            element={
+              <React.Suspense fallback={<LoadingScreen onComplete={() => {}} />}>
+                <ProgressionShowcase />
+              </React.Suspense>
+            } 
+          />
         </Routes>
       </main>
     </div>
