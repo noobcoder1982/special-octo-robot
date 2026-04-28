@@ -5,7 +5,6 @@ import { Button } from "./ui/button"
 import { cn } from "@/lib/utils"
 import { apiRequest } from "../lib/api"
 import { useTheme } from "../contexts/ThemeContext"
-import TacticalIntelligence from "./TacticalIntelligence"
 
 type ViewType = 'Calendar' | 'Table' | 'Kanban' | 'Timeline' | 'Agenda';
 
