@@ -43,6 +43,8 @@ import { Button } from "./ui/button"
 import { AnimatedThemeToggler } from "./ui/animated-theme-toggler"
 import { cn } from "@/lib/utils"
 import { apiRequest } from "../lib/api"
+import { useNavigate } from "react-router-dom"
+
 
 type LayoutMode = 'overview' | 'focus' | 'grid' | 'activity' | 'compact'
 
@@ -81,6 +83,8 @@ export default function DashboardPage() {
   const [showLayoutMenu, setShowLayoutMenu] = React.useState(false)
   const [selectedPeriod, setSelectedPeriod] = React.useState<keyof typeof graphData>('Quarterly')
   const [showNotifications, setShowNotifications] = React.useState(false)
+  const navigate = useNavigate()
+
   
   // Calendar Logic
   const now = new Date()
@@ -116,9 +120,35 @@ export default function DashboardPage() {
 
   const renderOverview = () => (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Mission Intelligence Banner */}
+      <motion.div 
+        {...fadeInUp}
+        className="relative h-64 w-full rounded-[4rem] bg-indigo-600 overflow-hidden shadow-2xl shadow-indigo-600/20 group cursor-pointer"
+        onClick={() => navigate('/mission-lab')}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-700 opacity-90" />
+        <div className="absolute top-0 right-0 p-16 opacity-10 group-hover:scale-110 transition-transform duration-700">
+           <Cpu className="h-64 w-64" />
+        </div>
+        <div className="absolute inset-0 p-12 flex flex-col justify-center">
+           <div className="flex items-center gap-4 mb-4">
+              <div className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-[9px] font-black uppercase tracking-[0.4em] text-white">Neural Active</div>
+              <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+           </div>
+           <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-white lowercase">AI Mission Laboratory</h2>
+           <p className="text-white/60 font-medium max-w-xl mt-4">Access our neural grid to parse raw situational data into actionable humanitarian missions.</p>
+        </div>
+        <div className="absolute bottom-8 right-12 h-16 w-16 rounded-full bg-white flex items-center justify-center shadow-2xl group-hover:translate-x-2 transition-transform">
+           <ArrowRight className="h-6 w-6 text-indigo-600" />
+        </div>
+      </motion.div>
+
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-10">
+
         {/* Main Impact Card */}
         <motion.div {...fadeInUp} className="bg-card border border-border rounded-[3.5rem] p-12 shadow-xl shadow-indigo-500/5 relative overflow-hidden group">
+          {/* ... existing impact card content ... */}
+
           <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none group-hover:scale-110 transition-transform duration-700">
             <TrendingUp className="h-64 w-64 text-indigo-600" />
           </div>

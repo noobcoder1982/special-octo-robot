@@ -5,13 +5,20 @@ import { Button } from "./components/ui/button"
 import Home from "./components/Home"
 import Marketplace from "./components/Marketplace"
 import DashboardPage from "./components/DashboardPage"
+import AboutPage from "./components/AboutPage"
+import ContactPage from "./components/ContactPage"
+import MapIntelligencePage from "./components/MapIntelligencePage"
+import PlannerPage from './components/PlannerPage';
+import MissionLab from "./components/MissionLab"
+import InventoryCenter from "./components/InventoryCenter"
 import GroupsPage from "./components/GroupsPage"
+import AIChatPage from "./components/AIChatPage"
 import ChatPage from "./components/ChatPage"
 import ProfilePage from "./components/ProfilePage"
 import SignInPage from "./components/SignInPage"
-import AboutPage from "./components/AboutPage"
-import ContactPage from "./components/ContactPage"
+import OnboardingPage from "./components/OnboardingPage"
 import Sidebar from "./components/Sidebar"
+
 import SettingsPage from "./components/SettingsPage"
 import ResourcesPage from "./components/ResourcesPage"
 import ContributionsPage from "./components/ContributionsPage"
@@ -232,71 +239,73 @@ function App({ isAuthenticated, handleLogin, handleLogout }: { isAuthenticated: 
       
       <main>
         <Routes>
-          <Route path="/" element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <Navigate to="/dashboard" />) : <Home />} />
-          <Route path="/about" element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <Navigate to="/dashboard" />) : <AboutPage />} />
-          <Route path="/contact" element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <Navigate to="/dashboard" />) : <ContactPage />} />
-          <Route path="/signin" element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <Navigate to="/dashboard" />) : <SignInPage onLogin={handleLogin} />} />
+          <Route path="/" element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <Navigate to="/dashboard" />) : <Home />} />
+          <Route path="/about" element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <Navigate to="/dashboard" />) : <AboutPage />} />
+          <Route path="/contact" element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <Navigate to="/dashboard" />) : <ContactPage />} />
+          <Route path="/signin" element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <Navigate to="/dashboard" />) : <SignInPage onLogin={handleLogin} />} />
           <Route path="/pricing" element={<PricingPage />} />
           <Route path="/features" element={<FeaturesPage />} />
           <Route path="/resources" element={<ResourcesPage />} />
+          <Route path="/onboarding" element={isAuthenticated ? <OnboardingPage /> : <Navigate to="/signin" />} />
           
-          {/* Main App Routes with Completion Check */}
+          {/* Main App Routes */}
           <Route 
             path="/dashboard" 
-            element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <AppLayout onLogout={handleLogout}><DashboardPage /></AppLayout>) : <Navigate to="/signin" />} 
+            element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <AppLayout onLogout={handleLogout}><DashboardPage /></AppLayout>) : <Navigate to="/signin" />} 
+          />
+          <Route 
+            path="/planner" 
+            element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <AppLayout onLogout={handleLogout}><PlannerPage /></AppLayout>) : <Navigate to="/signin" />} 
+          />
+          <Route 
+            path="/mission-lab" 
+            element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <AppLayout onLogout={handleLogout}><MissionLab /></AppLayout>) : <Navigate to="/signin" />} 
+          />
+          <Route 
+            path="/ai-console" 
+            element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <AppLayout onLogout={handleLogout}><AIChatPage /></AppLayout>) : <Navigate to="/signin" />} 
+          />
+          <Route 
+            path="/map" 
+            element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <AppLayout onLogout={handleLogout}><MapIntelligencePage /></AppLayout>) : <Navigate to="/signin" />} 
+          />
+          <Route 
+            path="/inventory" 
+            element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <AppLayout onLogout={handleLogout}><InventoryCenter /></AppLayout>) : <Navigate to="/signin" />} 
           />
           <Route 
             path="/marketplace" 
-            element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <AppLayout onLogout={handleLogout}><Marketplace /></AppLayout>) : <Navigate to="/signin" />} 
-          />
-          <Route 
-            path="/quests" 
-            element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <AppLayout onLogout={handleLogout}><Marketplace /></AppLayout>) : <Navigate to="/signin" />} 
-          />
-          <Route 
-            path="/groups" 
-            element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <AppLayout onLogout={handleLogout}><GroupsPage /></AppLayout>) : <Navigate to="/signin" />} 
+            element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <AppLayout onLogout={handleLogout}><Marketplace /></AppLayout>) : <Navigate to="/signin" />} 
           />
           <Route 
             path="/chat" 
-            element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <AppLayout onLogout={handleLogout}><ChatPage /></AppLayout>) : <Navigate to="/signin" />} 
+            element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <AppLayout onLogout={handleLogout}><ChatPage /></AppLayout>) : <Navigate to="/signin" />} 
           />
-           <Route 
+          <Route 
             path="/activity" 
-            element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <AppLayout onLogout={handleLogout}><ActivityLogPage /></AppLayout>) : <Navigate to="/signin" />} 
-          />
-          <Route 
-            path="/contributions" 
-            element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <AppLayout onLogout={handleLogout}><ContributionsPage /></AppLayout>) : <Navigate to="/signin" />} 
-          />
-          <Route 
-            path="/achievements" 
-            element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <AppLayout onLogout={handleLogout}><AchievementsPage /></AppLayout>) : <Navigate to="/signin" />} 
+            element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <AppLayout onLogout={handleLogout}><ActivityLogPage /></AppLayout>) : <Navigate to="/signin" />} 
           />
           <Route 
             path="/impact-score" 
-            element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <AppLayout onLogout={handleLogout}><ImpactScorePage /></AppLayout>) : <Navigate to="/signin" />} 
-          />
-          <Route 
-            path="/team-missions" 
-            element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <AppLayout onLogout={handleLogout}><TeamMissionsPage /></AppLayout>) : <Navigate to="/signin" />} 
+            element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <AppLayout onLogout={handleLogout}><ImpactScorePage /></AppLayout>) : <Navigate to="/signin" />} 
           />
           <Route 
             path="/assignments" 
-            element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <AppLayout onLogout={handleLogout}><AssignmentsPage /></AppLayout>) : <Navigate to="/signin" />} 
+            element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <AppLayout onLogout={handleLogout}><AssignmentsPage /></AppLayout>) : <Navigate to="/signin" />} 
           />
           <Route 
             path="/alerts" 
-            element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <AppLayout onLogout={handleLogout}><GenericMissionPage title="Alert Grid" icon={Bell} /></AppLayout>) : <Navigate to="/signin" />} 
+            element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <AppLayout onLogout={handleLogout}><AlertsPage /></AppLayout>) : <Navigate to="/signin" />} 
           />
           <Route 
             path="/settings" 
-            element={isAuthenticated ? (isProfileIncomplete ? <Navigate to="/profile" replace /> : <AppLayout onLogout={handleLogout}><SettingsPage /></AppLayout>) : <Navigate to="/signin" />} 
+            element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <AppLayout onLogout={handleLogout}><SettingsPage /></AppLayout>) : <Navigate to="/signin" />} 
           />
           <Route 
             path="/profile" 
             element={isAuthenticated ? <AppLayout onLogout={handleLogout}><ProfilePage /></AppLayout> : <Navigate to="/signin" />} 
           />
+
           <Route path="/theme-demo" element={<ThemeSwitchDemo />} />
           <Route path="/progression" element={<ProgressionShowcase />} />
         </Routes>

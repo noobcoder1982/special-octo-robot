@@ -16,7 +16,7 @@ export default function ImpactScorePage() {
   const stats = [
     { label: "Community Value", value: "$4.2M", change: "+12.4%", icon: Globe },
     { label: "Volunteer Synergy", value: "98.2", change: "+5.1%", icon: Users },
-    { label: "Mission Velocity", value: "x2.4", change: "+24%", icon: Activity },
+    { label: "Operational Speed", value: "x2.4", change: "+24%", icon: Activity },
   ];
 
   return (

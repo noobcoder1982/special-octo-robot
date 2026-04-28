@@ -17,7 +17,12 @@ import {
   Logout01Icon,
   ArrowLeft01Icon,
   ArrowRight01Icon,
-  ArrowDown01Icon
+  ArrowDown01Icon,
+  Activity01Icon as ActivityIcon,
+  AiChat01Icon as Bot,
+  CpuIcon as Cpu,
+  PackageIcon as Package,
+  Location01Icon as MapPin
 } from "hugeicons-react"
 import { useLanguage } from "../contexts/LanguageContext"
 import { useSound } from "../hooks/useSound"
@@ -64,29 +69,35 @@ export default function Sidebar({ onLogout }: { onLogout?: () => void }) {
 
   const navGroups = [
     {
-      label: "Navigation",
+      label: "Tactical Hub",
       items: [
-        { icon: DashboardCircleIcon, label: "Dashboard", path: "/dashboard" },
-        { icon: ShoppingBasket01Icon, label: "Marketplace", path: "/marketplace", badge: marketBadge },
-        { icon: Comment01Icon, label: "Communication", path: "/chat" },
-        { icon: TimeScheduleIcon, label: "Activity Log", path: "/activity" },
+        { icon: DashboardCircleIcon, label: "Global Hub", path: "/dashboard" },
+        { icon: MapPin, label: "Strategic Map", path: "/map" },
+        { icon: TimeScheduleIcon, label: "Strategic Planner", path: "/planner" },
+        { icon: Notification01Icon, label: "Live Alerts", path: "/alerts", badge: "12" },
       ]
     },
     {
-      label: "Impact & Growth",
+      label: "Neural Operations",
       items: [
-        { icon: FavouriteIcon, label: "Contributions", path: "/contributions", hasDropdown: true },
-        { icon: Award01Icon, label: "Achievements", path: "/achievements" },
+        { icon: Cpu, label: "Mission Lab", path: "/mission-lab", aiBadge: true },
+        { icon: Bot, label: "AI Assistant", path: "/ai-console", aiBadge: true },
+      ]
+    },
+    {
+      label: "Field Deployment",
+      items: [
+        { icon: Package, label: "Inventory Hub", path: "/inventory" },
+        { icon: ShoppingBasket01Icon, label: "Mission Board", path: "/marketplace", badge: marketBadge },
+        { icon: Comment01Icon, label: "Operational Chat", path: "/chat" },
+      ]
+    },
+    {
+      label: "Operator Metrics",
+      items: [
+        { icon: ActivityIcon, label: "Activity Log", path: "/activity" },
         { icon: FlashIcon, label: "Impact Score", path: "/impact-score" },
-        { icon: UserGroupIcon, label: "Communities", path: "/groups", hasDropdown: true },
-      ]
-    },
-    {
-      label: "Missions",
-      items: [
-        { icon: Briefcase01Icon, label: "Team Missions", path: "/team-missions" },
         { icon: TaskEdit01Icon, label: "My Assignments", path: "/assignments" },
-        { icon: Notification01Icon, label: "System Alerts", path: "/alerts" },
       ]
     }
   ];
