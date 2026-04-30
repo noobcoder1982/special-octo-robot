@@ -14,11 +14,11 @@ import {
   RocketIcon as Rocket,
   Add01Icon as Plus,
   ArrowLeft01Icon as ArrowLeft,
-  ChampionIcon,
-  Chat01Icon,
+  Award01Icon as ChampionIcon,
+  Comment01Icon as Chat01Icon,
   PackageIcon,
-  Map01Icon,
-  Energy01Icon
+  CompassIcon as Map01Icon,
+  FlashIcon as Energy01Icon
 } from "hugeicons-react"
 import { cn } from "@/lib/utils"
 import { Link } from "react-router-dom"
