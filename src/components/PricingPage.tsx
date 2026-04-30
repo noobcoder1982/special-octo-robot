@@ -28,8 +28,10 @@ import {
   AnalyticsUpIcon as BarChart3,
   Comment01Icon as MessageSquare,
   Shield01Icon as Shield,
-  InformationCircleIcon as LifeBuoy
+  InformationCircleIcon as LifeBuoy,
+  Clock01Icon as Clock
 } from "hugeicons-react"
+import { Link } from "react-router-dom"
 import { Button } from "./ui/button"
 import { cn } from "@/lib/utils"
 
@@ -164,6 +166,14 @@ export default function PricingPage() {
                      <BlurText text="support." delay={0.4} />
                   </span>
                </h1>
+            </div>
+
+            <div className="flex flex-col items-center gap-6 pt-4">
+               <Link to="/changelog" className="group/changelog flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600/5 border border-indigo-600/10 hover:bg-indigo-600/10 transition-all">
+                  <Clock className="h-3.5 w-3.5 text-indigo-600" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600/60 group-hover/changelog:text-indigo-600">View Latest Updates</span>
+                  <ArrowRight className="h-3 w-3 text-indigo-600 opacity-0 -translate-x-2 group-hover/changelog:opacity-100 group-hover/changelog:translate-x-0 transition-all" />
+               </Link>
             </div>
 
             {/* BILLING TOGGLE */}

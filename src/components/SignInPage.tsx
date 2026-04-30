@@ -129,7 +129,7 @@ export default function SignInPage({ onLogin }: { onLogin: (user?: any) => void 
     <div className="min-h-screen w-full flex bg-[#F8FAFC] dark:bg-background font-sans selection:bg-indigo-600/10 overflow-hidden relative">
       
       {/* Left Panel: Minimal Form */}
-      <div className="flex-1 flex flex-col justify-center px-8 md:px-24 lg:px-32 xl:px-40 bg-white dark:bg-card relative z-10 shadow-[20px_0_40px_rgba(0,0,0,0.03)] dark:shadow-none transition-colors duration-500">
+      <div className="flex-1 flex flex-col pt-32 lg:pt-0 lg:justify-center px-8 md:px-24 lg:px-32 xl:px-40 bg-white dark:bg-card relative z-10 shadow-[20px_0_40px_rgba(0,0,0,0.03)] dark:shadow-none transition-colors duration-500">
          
          {/* Mobile Header */}
          <div className="lg:hidden absolute top-8 left-8 right-8 flex justify-between items-center">
@@ -141,25 +141,27 @@ export default function SignInPage({ onLogin }: { onLogin: (user?: any) => void 
             ImpactQuest.
          </Link>
 
-         <motion.div 
-           key={isLogin ? 'login-form' : 'signup-form'}
-           initial={{ opacity: 0, y: 20 }}
-           animate={{ opacity: 1, y: 0 }}
-           transition={{ duration: 0.4, ease: "easeOut" }}
-           className="max-w-[420px] w-full mx-auto space-y-10"
-         >
-            {/* Header */}
-            <div className="space-y-3">
-               <h2 className="text-4xl font-bold tracking-tight text-foreground">
-                 {isLogin ? 'Welcome back' : 'Create an account'}
-               </h2>
-               <p className="text-muted-foreground text-[15px]">
-                  {isLogin 
-                     ? "Enter your details to access your dashboard."
-                     : "Sign up and join the global volunteer network."
-                  }
-               </p>
-            </div>
+         <AnimatePresence mode="wait">
+            <motion.div 
+              key={isLogin ? 'login-form' : 'signup-form'}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="max-w-[420px] w-full mx-auto space-y-10"
+            >
+               {/* Header */}
+               <div className="space-y-3">
+                  <h2 className="text-4xl font-bold tracking-tight text-foreground">
+                    {isLogin ? 'Welcome back' : 'Create an account'}
+                  </h2>
+                  <p className="text-muted-foreground text-[15px]">
+                     {isLogin 
+                        ? "Enter your details to access your dashboard."
+                        : "Sign up and join the global volunteer network."
+                     }
+                  </p>
+               </div>
 
             {/* Form */}
             <form onSubmit={handleAuth} className="space-y-5">
@@ -331,40 +333,113 @@ export default function SignInPage({ onLogin }: { onLogin: (user?: any) => void 
                </button>
             </div>
          </motion.div>
+         </AnimatePresence>
       </div>
 
-      {/* Right Panel: Beautiful Gradient Visual */}
-      <div className="hidden lg:flex w-[55%] relative overflow-hidden bg-indigo-600">
-         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-700" />
-         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-white/10 blur-[120px] rounded-full translate-x-1/3 -translate-y-1/3" />
-         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-900/40 blur-[100px] rounded-full -translate-x-1/4 translate-y-1/4" />
+      {/* Right Panel: Premium Visual Experience */}
+      <div className="hidden lg:flex w-[55%] relative overflow-hidden bg-[#0A0A0B]">
          
-         <div className="absolute inset-0 flex items-center justify-center p-20">
-            <div className="max-w-xl text-white space-y-8">
-               <h1 className="text-5xl xl:text-6xl font-bold tracking-tight leading-[1.1]">
-                  Effortlessly manage your missions and impact.
-               </h1>
-               <p className="text-indigo-100 text-lg md:text-xl font-medium max-w-lg">
-                  Join a global network of volunteers and organizations coordinating real-world change in real-time.
-               </p>
+         {/* Animated Mesh Gradients */}
+         <div className="absolute inset-0 z-0">
+            <div className="absolute top-[-10%] right-[-10%] w-[70%] h-[70%] bg-indigo-600/30 blur-[120px] rounded-full animate-pulse" />
+            <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-purple-600/20 blur-[100px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+         </div>
 
-               {/* Decorative Dashboard Mockup Graphic */}
-               <div className="w-[120%] h-64 bg-white/10 backdrop-blur-md rounded-tl-3xl rounded-bl-3xl border-l border-t border-b border-white/20 mt-16 p-8 relative overflow-hidden transform translate-x-12 shadow-2xl">
-                  <div className="flex gap-3 mb-6">
-                     <div className="h-3 w-3 rounded-full bg-red-400/80" />
-                     <div className="h-3 w-3 rounded-full bg-amber-400/80" />
-                     <div className="h-3 w-3 rounded-full bg-emerald-400/80" />
-                  </div>
-                  <div className="grid grid-cols-3 gap-6">
-                     <div className="col-span-2 space-y-4">
-                        <div className="h-4 w-1/3 bg-white/20 rounded-full" />
-                        <div className="h-32 w-full bg-white/10 rounded-2xl" />
+         {/* Decorative Grid */}
+         <div className="absolute inset-0 opacity-[0.15] mix-blend-overlay" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.1) 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+
+         <div className="relative z-10 w-full flex items-center justify-center p-20">
+            <div className="max-w-2xl w-full space-y-12">
+               
+               <motion.div
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 transition={{ duration: 0.8 }}
+                 className="space-y-6"
+               >
+                  <h1 className="text-6xl xl:text-7xl font-bold tracking-tight text-white leading-[1.05]">
+                     Orchestrate <br/>
+                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 italic">global impact.</span>
+                  </h1>
+                  <p className="text-indigo-100/60 text-xl font-medium max-w-lg leading-relaxed">
+                     Empowering NGOs and volunteers with real-time intelligence to solve humanity's most pressing challenges.
+                  </p>
+               </motion.div>
+
+               {/* Dynamic Mockup Visual */}
+               <div className="relative pt-12">
+                  {/* Main Dashboard Card */}
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2, duration: 0.8 }}
+                    className="w-full aspect-[16/10] bg-white/5 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden p-8"
+                  >
+                     <div className="flex items-center justify-between mb-8">
+                        <div className="flex gap-2">
+                           <div className="h-3 w-3 rounded-full bg-red-500/50" />
+                           <div className="h-3 w-3 rounded-full bg-amber-500/50" />
+                           <div className="h-3 w-3 rounded-full bg-emerald-500/50" />
+                        </div>
+                        <div className="h-8 px-4 rounded-full bg-white/5 border border-white/10 flex items-center gap-2">
+                           <div className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+                           <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Live Grid Active</span>
+                        </div>
                      </div>
-                     <div className="space-y-4">
-                        <div className="h-20 w-full bg-white/20 rounded-2xl" />
-                        <div className="h-20 w-full bg-white/10 rounded-2xl" />
+
+                     <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                           <div className="h-32 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 p-6 flex flex-col justify-between">
+                              <div className="h-2 w-12 bg-indigo-400/40 rounded-full" />
+                              <div className="space-y-2">
+                                 <div className="h-4 w-full bg-white/10 rounded-full" />
+                                 <div className="h-4 w-2/3 bg-white/5 rounded-full" />
+                              </div>
+                           </div>
+                           <div className="h-24 rounded-3xl bg-white/5 border border-white/10 p-6" />
+                        </div>
+                        <div className="space-y-4">
+                           <div className="h-24 rounded-3xl bg-white/5 border border-white/10 p-6" />
+                           <div className="h-32 rounded-3xl bg-purple-500/10 border border-purple-500/20 p-6 flex flex-col justify-between">
+                              <div className="h-2 w-16 bg-purple-400/40 rounded-full" />
+                              <div className="h-8 w-8 rounded-full bg-white/10" />
+                           </div>
+                        </div>
                      </div>
-                  </div>
+                  </motion.div>
+
+                  {/* Floating Elements */}
+                  <motion.div 
+                    animate={{ y: [0, -20, 0] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute -top-10 -right-10 w-48 p-4 rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl"
+                  >
+                     <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-xl bg-indigo-500 flex items-center justify-center text-white font-bold">AI</div>
+                        <div className="space-y-1">
+                           <div className="h-2 w-16 bg-white/40 rounded-full" />
+                           <div className="h-2 w-10 bg-white/20 rounded-full" />
+                        </div>
+                     </div>
+                  </motion.div>
+
+                  <motion.div 
+                    animate={{ y: [0, 20, 0] }}
+                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                    className="absolute -bottom-6 -left-10 w-56 p-5 rounded-3xl bg-indigo-600 shadow-2xl shadow-indigo-600/40"
+                  >
+                     <div className="space-y-3">
+                        <div className="h-1.5 w-12 bg-white/30 rounded-full" />
+                        <div className="text-xs font-bold text-white uppercase tracking-widest">Mission Deployed</div>
+                        <div className="h-1 w-full bg-white/20 rounded-full overflow-hidden">
+                           <motion.div 
+                             animate={{ x: [-100, 200] }}
+                             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                             className="h-full w-1/3 bg-white/60"
+                           />
+                        </div>
+                     </div>
+                  </motion.div>
                </div>
             </div>
          </div>

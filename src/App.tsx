@@ -30,6 +30,7 @@ import ActivityLogPage from "./components/ActivityLogPage"
 import FeaturesPage from "./components/FeaturesPage"
 import LoadingScreen from "./components/LoadingScreen"
 import PricingPage from "./components/PricingPage"
+import ChangelogPage from "./components/ChangelogPage"
 import { AnimatedThemeToggler } from "./components/ui/animated-theme-toggler"
 import { LanguageProvider, useLanguage } from "./contexts/LanguageContext"
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext"
@@ -162,6 +163,7 @@ function Navbar({ isAuthenticated, onLogout }: { isAuthenticated: boolean, onLog
             { name: "Resources", path: "/resources" },
             { name: "About Us", path: "/about" },
             { name: "Pricing", path: "/pricing" },
+            { name: "Changelog", path: "/changelog" },
             { name: "Contact", path: "/contact" }
           ].map((item) => (
             <Link 
@@ -239,6 +241,7 @@ function App({ isAuthenticated, handleLogin, handleLogout }: { isAuthenticated: 
           <Route path="/contact" element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <Navigate to="/dashboard" />) : <ContactPage />} />
           <Route path="/signin" element={isAuthenticated ? (isOnboardingRequired ? <Navigate to="/onboarding" replace /> : <Navigate to="/dashboard" />) : <SignInPage onLogin={handleLogin} />} />
           <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/changelog" element={<ChangelogPage />} />
           <Route path="/features" element={<FeaturesPage />} />
           <Route path="/resources" element={<ResourcesPage />} />
           
