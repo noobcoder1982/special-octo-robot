@@ -1,205 +1,164 @@
 import * as React from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion } from "framer-motion"
+import { Link } from "react-router-dom"
 import { 
   Shield01Icon as Shield, 
   Target01Icon as Target, 
-  FlashIcon as Zap, 
-  GlobeIcon as Globe, 
-  CpuIcon as Cpu, 
-  CommandIcon as Command 
+  GlobeIcon as Globe,
+  ArrowRight01Icon as ArrowRight,
+  SparklesIcon as Sparkles,
+  FavouriteIcon as Heart
 } from "hugeicons-react"
-import { cn } from "@/lib/utils"
 
-const BlurText = ({ text, className, delay = 0, stagger = 0.02 }: { text: string, className?: string, delay?: number, stagger?: number }) => {
-  const letters = text.split("");
-  const container = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: stagger, delayChildren: delay },
-    },
-  };
-  const child = {
-    visible: {
-      opacity: 1,
-      filter: "blur(0px)",
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: [0.16, 1, 0.3, 1]
-      },
-    },
-    hidden: {
-      opacity: 0,
-      filter: "blur(40px)",
-      y: 40,
-    },
-  };
+const fadeUp = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true },
+  transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] }
+}
 
-  return (
-    <motion.span
-      variants={container}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      className={cn("inline-flex flex-wrap", className)}
-    >
-      {letters.map((letter, index) => (
-        <motion.span variants={child} key={index} className="inline-block leading-none">
-          {letter === " " ? "\u00A0" : letter}
-        </motion.span>
-      ))}
-    </motion.span>
-  );
-};
+const values = [
+  {
+    icon: Target,
+    title: "Mission First",
+    desc: "Every feature, every decision, every line of code exists to get volunteers to the right place at the right time."
+  },
+  {
+    icon: Globe,
+    title: "Borderless by Design",
+    desc: "We're built for a world without boundaries — supporting 50+ languages and cross-border coordination from day one."
+  },
+  {
+    icon: Shield,
+    title: "Radically Transparent",
+    desc: "Every contribution is tracked, verified, and visible. We believe trust is built through accountability."
+  },
+  {
+    icon: Heart,
+    title: "Community Powered",
+    desc: "We're nothing without our volunteers. Our platform is shaped by the people who use it every day."
+  }
+]
+
+const stats = [
+  { value: "50k+", label: "Volunteers" },
+  { value: "120+", label: "Countries" },
+  { value: "99.9%", label: "Uptime" },
+  { value: "2022", label: "Founded" }
+]
 
 export default function AboutPage() {
-  const containerRef = React.useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
-  const x1 = useTransform(scrollYProgress, [0, 1], [0, -500]);
-  const x2 = useTransform(scrollYProgress, [0, 1], [0, 500]);
-
   return (
-    <div ref={containerRef} className="min-h-[300vh] bg-background selection:bg-indigo-600/10 transition-colors duration-1000">
-      
-      {/* Sector 1: Massive Typographic Induction */}
-      <section className="h-screen flex flex-col justify-center px-8 md:px-12 lg:px-24 relative overflow-hidden">
-         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] bg-indigo-600/5 blur-[200px] rounded-full pointer-events-none" />
-         
-         <div className="relative z-10 space-y-12">
-            <div className="flex items-center gap-4">
-               <Shield className="h-5 w-5 text-indigo-600" />
-               <span className="text-indigo-600 text-[10px] font-black uppercase tracking-[0.4em]">Governance Protocol v9.0</span>
-            </div>
-            
-            <h1 className="text-[15vw] lg:text-[14rem] font-black tracking-tighter leading-[0.8] text-foreground lowercase">
-               <BlurText text="we are" /> <br/>
-               <span className="text-foreground/10 italic outline-text">
-                  <BlurText text="impactquest." delay={0.4} />
-               </span>
-            </h1>
+    <div className="bg-background min-h-screen">
 
-            <p className="max-w-3xl text-2xl md:text-3xl text-muted-foreground font-medium leading-relaxed italic border-l-8 border-indigo-600 pl-12">
-               "Built on the ruins of fragmented efforts, ImpactQuest is the high-fidelity orchestration layer for global humanitarian deployment."
-            </p>
-         </div>
-
-         {/* Background Ghost Text */}
-         <div className="absolute bottom-10 right-10 opacity-[0.02] select-none">
-            <h2 className="text-[20vw] font-black tracking-tighter leading-none lowercase">GENESIS</h2>
-         </div>
+      {/* Hero */}
+      <section className="px-6 pt-36 pb-20 md:px-12 max-w-4xl mx-auto">
+        <motion.div {...fadeUp} className="space-y-6">
+          <span className="inline-flex items-center gap-2 text-indigo-600 text-[10px] font-bold uppercase tracking-widest">
+            <Sparkles className="h-3.5 w-3.5" /> About ImpactQ
+          </span>
+          <h1 className="text-4xl md:text-7xl font-bold tracking-tight text-foreground leading-tight">
+            We're building the<br />
+            <span className="text-indigo-600">infrastructure for good.</span>
+          </h1>
+          <p className="text-base md:text-xl text-muted-foreground font-medium leading-relaxed max-w-2xl">
+            ImpactQuest connects skilled volunteers with the missions that need them most — using real-time data, AI-driven matching, and a platform built for scale.
+          </p>
+        </motion.div>
       </section>
 
-      {/* Sector 2: Cinematic Kinetic Typography */}
-      <section className="h-screen flex flex-col justify-center overflow-hidden border-y border-white/5 bg-black/5 relative">
-         <motion.div style={{ x: x1 }} className="whitespace-nowrap">
-            <h2 className="text-[18vw] font-black tracking-tighter text-foreground/10 lowercase outline-text">tactical. engineered. resilient. strategic.</h2>
-         </motion.div>
-         <div className="py-12 px-8 md:px-24 flex justify-between items-center relative z-10">
-            <div className="max-w-2xl space-y-8">
-               <h3 className="text-5xl font-bold tracking-tight text-foreground lowercase">
-                  <BlurText text="our core methodology" />
-               </h3>
-               <p className="text-xl text-muted-foreground leading-relaxed italic opacity-60">
-                  Every mission profile on our grid is verified through a multi-layered audit protocol. We don't just coordinate; we engineer impact with mathematical precision.
-               </p>
+      {/* Stats Row */}
+      <section className="px-6 md:px-12 pb-20 max-w-4xl mx-auto">
+        <motion.div 
+          {...fadeUp}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border/40 rounded-2xl overflow-hidden border border-border/40"
+        >
+          {stats.map((s, i) => (
+            <div key={i} className="bg-background flex flex-col items-center justify-center py-8 px-4 gap-1">
+              <span className="text-3xl md:text-4xl font-bold text-foreground">{s.value}</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">{s.label}</span>
             </div>
-            <div className="hidden lg:flex flex-col items-end gap-2 text-right opacity-20">
-               <div className="text-xs font-black uppercase tracking-widest text-indigo-600">Verification Rate</div>
-               <div className="text-8xl font-black italic">99.9%</div>
-            </div>
-         </div>
-         <motion.div style={{ x: x2 }} className="whitespace-nowrap">
-            <h2 className="text-[18vw] font-black tracking-tighter text-foreground/10 lowercase outline-text text-right">unified. precise. mission-centric. automated.</h2>
-         </motion.div>
+          ))}
+        </motion.div>
       </section>
 
-      {/* Sector 3: High-Density Operational Grid */}
-      <section className="min-h-screen py-48 px-8 md:px-12 lg:px-24 max-w-[1700px] mx-auto">
-         <div className="grid grid-cols-1 lg:grid-cols-2 gap-48 items-center">
-            <div className="space-y-24">
-               {[
-                  { tag: "01", title: "Autonomous Indexing", desc: "Real-time parsing of global humanitarian data nodes to identify high-urgency rescue sites before they escalate.", icon: Cpu },
-                  { tag: "02", title: "Neural Skill Mapping", desc: "Analyzing volunteer trajectories to deploy the most compatible expertise to the most critical sectors.", icon: Target },
-                  { tag: "03", title: "Immutable Audit", desc: "Every contribution is hashed and verified, creating a transparent ledger of community resilience.", icon: Command }
-               ].map((item, i) => (
-                  <motion.div 
-                    key={i}
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    className="group space-y-6"
-                  >
-                     <div className="flex items-center gap-4">
-                        <span className="text-indigo-600 font-black text-xs font-mono tracking-widest">{item.tag} //</span>
-                        <h4 className="text-4xl font-bold tracking-tight text-foreground lowercase">
-                           <BlurText text={item.title} delay={0.2} />
-                        </h4>
-                     </div>
-                     <p className="text-xl text-muted-foreground font-medium leading-relaxed italic border-l-4 border-indigo-600/20 pl-8 group-hover:border-indigo-600 transition-all">
-                        {item.desc}
-                     </p>
-                  </motion.div>
-               ))}
-            </div>
-
-            <div className="relative">
-               <div className="aspect-[4/5] rounded-[4rem] bg-indigo-600/5 border border-indigo-600/10 overflow-hidden relative group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full p-20 flex flex-col justify-between">
-                     <span className="text-[10px] font-black uppercase tracking-[0.5em] text-indigo-600">Observation Mode</span>
-                     <h5 className="text-6xl font-black text-foreground lowercase">beyond <br/> <span className="text-muted-foreground/20 italic">coordination.</span></h5>
-                     <div className="space-y-8">
-                        <div className="h-1 w-full bg-indigo-600/10 overflow-hidden rounded-full">
-                           <motion.div 
-                             initial={{ width: 0 }}
-                             whileInView={{ width: '85%' }}
-                             transition={{ duration: 2, ease: "easeOut" }}
-                             className="h-full bg-indigo-600"
-                           />
-                        </div>
-                        <p className="text-xs font-black uppercase tracking-[0.4em] text-muted-foreground/40">Grid Saturation Levels: Active</p>
-                     </div>
-                  </div>
-               </div>
-
-               {/* Geometric Accents */}
-               <div className="absolute -top-12 -right-12 h-32 w-32 bg-indigo-600/20 blur-[60px] rounded-full animate-pulse" />
-               <div className="absolute -bottom-20 -left-20 h-64 w-64 bg-purple-600/10 blur-[100px] rounded-full" />
-            </div>
-         </div>
-      </section>
-
-      {/* Sector 4: Final Induction */}
-      <section className="h-[80vh] flex flex-col justify-center items-center text-center px-8">
-         <div className="space-y-12 max-w-4xl">
-            <h2 className="text-[8vw] lg:text-[8rem] font-black tracking-tighter leading-[0.8] text-foreground lowercase">
-               <BlurText text="join the protocol." />
+      {/* Our Story */}
+      <section className="px-6 md:px-12 py-16 max-w-4xl mx-auto border-t border-border/40">
+        <motion.div {...fadeUp} className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+          <div className="space-y-4">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-600">Our Story</span>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground">
+              Born from frustration.<br />Built with purpose.
             </h2>
-            <p className="text-2xl text-muted-foreground font-medium italic opacity-60">
-               We don't just build software; we architect the infrastructure of human kindness.
+          </div>
+          <div className="space-y-5 text-muted-foreground font-medium leading-relaxed">
+            <p>
+              We saw how fragmented volunteering was — spreadsheets, email chains, missed connections. Thousands of willing hands, and no system to direct them.
             </p>
-            <div className="pt-12">
-               <button className="h-24 px-16 rounded-[3rem] bg-indigo-600 text-white text-2xl font-black gap-6 hover:bg-indigo-700 transition-all shadow-2xl shadow-indigo-600/20 active:scale-95 leading-none">
-                  Deploy Profile
-               </button>
-            </div>
-         </div>
+            <p>
+              ImpactQuest was built to fix that. A single, unified platform where volunteers are matched with missions, impact is tracked, and communities are strengthened.
+            </p>
+            <p>
+              Today, we're a growing team of engineers, humanitarian workers, and designers who believe technology should serve people — not the other way around.
+            </p>
+          </div>
+        </motion.div>
       </section>
 
-      <style dangerouslySetInnerHTML={{ __html: `
-        .outline-text {
-          -webkit-text-stroke: 1.5px hsla(var(--foreground), 0.3);
-          color: hsla(var(--foreground), 0.05);
-        }
-        .dark .outline-text {
-          -webkit-text-stroke: 1.5px hsla(var(--foreground), 0.4);
-        }
-      `}} />
+      {/* Values */}
+      <section className="px-6 md:px-12 py-16 max-w-4xl mx-auto border-t border-border/40">
+        <motion.div {...fadeUp} className="space-y-10">
+          <div className="space-y-3">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-600">What We Believe</span>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">Our values.</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {values.map((v, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.6 }}
+                className="group p-6 rounded-2xl border border-border/50 bg-card hover:border-indigo-600/30 transition-all duration-300"
+              >
+                <div className="h-10 w-10 rounded-xl bg-indigo-600/10 flex items-center justify-center mb-4 group-hover:bg-indigo-600/20 transition-colors">
+                  <v.icon className="h-5 w-5 text-indigo-600" />
+                </div>
+                <h3 className="text-lg font-bold text-foreground mb-2">{v.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{v.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
+      {/* CTA */}
+      <section className="px-6 md:px-12 py-20 max-w-4xl mx-auto border-t border-border/40">
+        <motion.div {...fadeUp} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
+          <div className="space-y-2">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">Ready to make impact?</h2>
+            <p className="text-muted-foreground font-medium">Join 50,000+ volunteers already on the platform.</p>
+          </div>
+          <Link to="/signin" className="w-full sm:w-auto shrink-0">
+            <button className="w-full sm:w-auto h-14 px-8 rounded-xl bg-indigo-600 text-white font-bold text-base flex items-center justify-center gap-3 hover:bg-indigo-700 active:scale-95 transition-all shadow-lg shadow-indigo-600/20">
+              Get Started <ArrowRight className="h-5 w-5" />
+            </button>
+          </Link>
+        </motion.div>
+      </section>
+
+      {/* Footer strip */}
+      <div className="px-6 md:px-12 py-8 border-t border-border/30 max-w-4xl mx-auto">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/30 text-center">
+          © 2026 ImpactQuest · All Rights Reserved
+        </p>
+      </div>
+
     </div>
   )
 }
+
+
+

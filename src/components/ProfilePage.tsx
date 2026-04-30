@@ -27,12 +27,14 @@ import {
   AnalyticsUpIcon as TrendingUp,
   DashboardCircleIcon as Layout,
   Award01Icon as Award,
-  CircleIcon as Circle
+  CircleIcon as Circle,
+  Logout01Icon as LogOut
 } from "hugeicons-react"
 import { Button } from "./ui/button"
 import { cn } from "@/lib/utils"
 import { apiRequest } from "../lib/api"
 import { PREDEFINED_SKILLS } from "../data/skills"
+import { useNavigate } from "react-router-dom"
 
 // --- DUMMY DATA FOR PROTOCOL VISUALIZATION ---
 const ACTIVITY_HISTORY = [
@@ -76,6 +78,7 @@ const StatCard = ({ label, value, icon: Icon }: { label: string, value: string |
 )
 
 export default function ProfilePage() {
+  const navigate = useNavigate();
   const [user, setUser] = React.useState<any>(null);
   const [isEditing, setIsEditing] = React.useState(false);
   const [bannerImage, setBannerImage] = React.useState<string | null>(null);
@@ -153,6 +156,15 @@ export default function ProfilePage() {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    navigate('/signin');
+    window.location.reload();
   };
 
   if (!user) return null;
@@ -459,6 +471,17 @@ export default function ProfilePage() {
                ))}
             </div>
          </div>
+
+          {/* Logout Button - Mobile Visible */}
+          <div className="pt-8 pb-4">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-3 h-16 rounded-3xl border border-red-500/20 bg-red-500/5 text-red-500 font-bold text-sm uppercase tracking-wider hover:bg-red-500/10 active:scale-95 transition-all"
+            >
+              <LogOut className="h-5 w-5" />
+              Log Out
+            </button>
+          </div>
 
       </div>
     </div>

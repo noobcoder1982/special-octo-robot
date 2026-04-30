@@ -1,5 +1,5 @@
 import * as React from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion"
 import { Routes, Route, Link, useLocation, useNavigate, Navigate } from "react-router-dom"
 import { Button } from "./components/ui/button"
 import Home from "./components/Home"
@@ -46,7 +46,11 @@ import {
   DashboardCircleIcon,
   ShoppingBasket01Icon,
   UserIcon,
-  Settings01Icon
+  Settings01Icon,
+  Menu01Icon as Menu,
+  Cancel01Icon as Close,
+  Search01Icon as Search,
+  ArrowRight01Icon as ArrowRight
 } from "hugeicons-react"
 import { cn } from "@/lib/utils"
 
@@ -125,88 +129,246 @@ function MobileNav({ onLogout }: { onLogout: () => void }) {
   )
 }
 
+function InfiniteWheel({ navItems, location, onSelect }: { navItems: any[], location: any, onSelect: () => void }) {
+  const y = useMotionValue(0);
+  
+  const itemHeight = 110; 
+  const totalItemsHeight = navItems.length * itemHeight;
+
+  React.useEffect(() => {
+    return y.onChange((latest) => {
+      if (latest > 0) {
+        y.set(latest - totalItemsHeight);
+      } else if (latest < -totalItemsHeight) {
+        y.set(latest + totalItemsHeight);
+      }
+    });
+  }, [totalItemsHeight, y]);
+
+  const displayItems = [...navItems, ...navItems, ...navItems];
+
+  return (
+    <motion.div
+      drag="y"
+      dragConstraints={{ top: -Infinity, bottom: Infinity }}
+      dragElastic={0}
+      style={{ y }}
+      onDrag={(e, info) => {
+        y.set(y.get() + info.delta.y);
+      }}
+      className="flex flex-col items-stretch w-full cursor-grab active:cursor-grabbing select-none"
+    >
+      {displayItems.map((item, i) => {
+        const relativeIndex = i - navItems.length;
+        const itemOffset = useTransform(y, (val) => (relativeIndex * itemHeight) + val);
+        const isActive = location.pathname === item.path;
+
+        return (
+          <motion.div
+            key={`${item.name}-${i}`}
+            style={{ 
+              height: itemHeight,
+              perspective: 1000,
+              transformStyle: "preserve-3d"
+            }}
+            className="flex flex-col justify-center border-b border-white/10 mx-8"
+          >
+            <Link
+              to={item.path}
+              onClick={onSelect}
+              className={cn(
+                "flex items-center justify-between text-5xl md:text-7xl font-black tracking-tighter uppercase transition-all duration-500 py-4",
+                isActive ? "text-orange-500" : "text-white/20 hover:text-white"
+              )}
+            >
+              <span>{item.name}</span>
+              {isActive && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                >
+                  <ArrowRight size={32} strokeWidth={2} className="text-orange-500" />
+                </motion.div>
+              )}
+            </Link>
+          </motion.div>
+        );
+      })}
+    </motion.div>
+  );
+}
+
 function Navbar({ isAuthenticated, onLogout }: { isAuthenticated: boolean, onLogout: () => void }) {
   const location = useLocation();
   const { theme } = useTheme();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   const isAppPage = location.pathname !== "/" && location.pathname !== "/about" && location.pathname !== "/contact" && location.pathname !== "/signin" && location.pathname !== "/features" && location.pathname !== "/resources" && location.pathname !== "/pricing";
 
   if (isAppPage) return null;
 
-  return (
-    <motion.nav 
-      initial={false}
-      animate={{ 
-        y: location.pathname === "/signin" ? -150 : 0,
-        opacity: location.pathname === "/signin" ? 0 : 1
-      }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 left-0 w-full z-50 flex justify-center py-6 pointer-events-none bg-transparent"
-    >
-      <div className="flex items-center justify-between px-3 md:px-4 py-2 bg-background/60 backdrop-blur-3xl border border-border/30 rounded-full shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)] gap-4 lg:gap-8 mx-4 max-w-max pointer-events-auto">
-        {/* Left: Logo */}
-        <div className="flex items-center">
-          <Link to="/" className="flex items-center group">
-            <div className="flex items-center gap-2.5">
-              <div className="h-7 w-7 overflow-hidden transition-transform group-hover:scale-105">
-                <img src={theme === 'dark' ? "/logo-white.png" : "/logo-black.png"} alt="ImpactQuest" className="h-full w-full object-contain" />
-              </div>
-              <span className="font-semibold text-base tracking-tight opacity-90 transition-opacity group-hover:opacity-100">ImpactQuest</span>
-            </div>
-          </Link>
-        </div>
-        
-        <div className="hidden md:flex items-center gap-0.5">
-          {[
-            { name: "Home", path: "/" },
-            { name: "Features", path: "/features" },
-            { name: "Resources", path: "/resources" },
-            { name: "About Us", path: "/about" },
-            { name: "Pricing", path: "/pricing" },
-            { name: "Changelog", path: "/changelog" },
-            { name: "Contact", path: "/contact" }
-          ].map((item) => (
-            <Link 
-              key={item.name}
-              to={item.path} 
-              className={`text-[10px] font-black uppercase tracking-[0.2em] px-5 py-2.5 rounded-full transition-all duration-500 whitespace-nowrap relative group ${location.pathname === item.path ? 'text-background' : 'text-muted-foreground/60 hover:text-foreground hover:bg-foreground/[0.03]'}`}
-            >
-              {location.pathname === item.path && (
-                <motion.div 
-                  layoutId="activeTab"
-                  className="absolute inset-0 bg-foreground rounded-full -z-10 shadow-lg shadow-foreground/10"
-                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                />
-              )}
-              {item.name}
-            </Link>
-          ))}
-        </div>
+  const navItems = [
+    { name: "Home", path: "/" },
+    { name: "Features", path: "/features" },
+    { name: "Resources", path: "/resources" },
+    { name: "About Us", path: "/about" },
+    { name: "Pricing", path: "/pricing" },
+    { name: "Changelog", path: "/changelog" },
+    { name: "Contact", path: "/contact" }
+  ];
 
-        {/* Right: CTA */}
-        <div className="flex items-center">
-          {isAuthenticated ? (
-            <div className="flex items-center gap-2">
-              <Link to="/dashboard" className="text-[11px] font-bold uppercase tracking-[0.15em] bg-foreground text-background px-5 py-2 rounded-full transition-all hover:bg-accent hover:shadow-lg hover:-translate-y-[1px]">Dashboard</Link>
-              <button 
-                onClick={onLogout} 
-                className="p-2 hover:bg-secondary rounded-full transition-all group/logout ml-1"
-                title="Logout"
-              >
-                <LogOut className="h-[18px] w-[18px] text-muted-foreground group-hover/logout:text-red-500 transition-colors" />
-              </button>
-            </div>
-          ) : (
-            <Link to="/signin" className="text-[11px] font-bold uppercase tracking-[0.2em] bg-foreground text-background px-6 py-2.5 rounded-full transition-all hover:bg-accent hover:shadow-[0_8px_20px_-6px_rgba(var(--accent),0.5)] active:scale-95">
-              Get Started
+  return (
+    <>
+      <motion.nav 
+        initial={false}
+        animate={{ 
+          y: location.pathname === "/signin" ? -150 : 0,
+          opacity: location.pathname === "/signin" ? 0 : 1
+        }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="hidden md:flex fixed top-0 left-0 w-full z-50 justify-center py-6 pointer-events-none bg-transparent"
+      >
+        <div className="flex items-center justify-between px-3 md:px-4 py-2 bg-background/60 backdrop-blur-3xl border border-border/30 rounded-full shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)] gap-4 lg:gap-8 mx-4 max-w-max pointer-events-auto relative">
+          {/* Left: Logo */}
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center group" onClick={() => setIsMobileMenuOpen(false)}>
+              <div className="flex items-center gap-2.5">
+                <div className="h-7 w-7 overflow-hidden transition-transform group-hover:scale-105">
+                  <img src={theme === 'dark' ? "/logo-white.png" : "/logo-black.png"} alt="ImpactQuest" className="h-full w-full object-contain" />
+                </div>
+                <span className="font-semibold text-base tracking-tight opacity-90 transition-opacity group-hover:opacity-100">ImpactQuest</span>
+              </div>
             </Link>
-          )}
-          <div className="ml-2 border-l border-border/30 pl-2">
-            <AnimatedThemeToggler />
+          </div>
+          
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-0.5">
+            {navItems.map((item) => (
+              <Link 
+                key={item.name}
+                to={item.path} 
+                className={`text-[10px] font-black uppercase tracking-[0.2em] px-5 py-2.5 rounded-full transition-all duration-500 whitespace-nowrap relative group ${location.pathname === item.path ? 'text-background' : 'text-muted-foreground/60 hover:text-foreground hover:bg-foreground/[0.03]'}`}
+              >
+                {location.pathname === item.path && (
+                  <motion.div 
+                    layoutId="activeTab"
+                    className="absolute inset-0 bg-foreground rounded-full -z-10 shadow-lg shadow-foreground/10"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                {item.name}
+              </Link>
+            ))}
+          </div>
+
+          {/* Right: CTA & Mobile Toggle */}
+          <div className="flex items-center gap-1.5">
+            {isAuthenticated ? (
+              <div className="hidden sm:flex items-center gap-2">
+                <Link to="/dashboard" className="text-[11px] font-bold uppercase tracking-[0.15em] bg-foreground text-background px-5 py-2 rounded-full transition-all hover:bg-accent hover:shadow-lg hover:-translate-y-[1px]">Dashboard</Link>
+                <button 
+                  onClick={onLogout} 
+                  className="p-2 hover:bg-secondary rounded-full transition-all group/logout ml-1"
+                  title="Logout"
+                >
+                  <LogOut className="h-[18px] w-[18px] text-muted-foreground group-hover/logout:text-red-500 transition-colors" />
+                </button>
+              </div>
+            ) : (
+              <div className="hidden sm:flex items-center">
+                <Link to="/signin" className="text-[11px] font-bold uppercase tracking-[0.2em] bg-foreground text-background px-6 py-2.5 rounded-full transition-all hover:bg-accent hover:shadow-[0_8px_20px_-6px_rgba(var(--accent),0.5)] active:scale-95">
+                  Get Started
+                </Link>
+              </div>
+            )}
+
+            <div className="hidden sm:block ml-1 md:ml-2 border-l border-border/30 pl-2">
+              <AnimatedThemeToggler />
+            </div>
           </div>
         </div>
+      </motion.nav>
+
+      {/* Premium Mobile Header Bar */}
+      <div className={cn(
+        "md:hidden fixed top-0 left-0 w-full z-[120] h-24 flex items-center justify-between px-8 transition-all duration-500",
+        isMobileMenuOpen ? "bg-zinc-950" : "bg-background/80 backdrop-blur-2xl border-b border-border/10"
+      )}>
+        <Link to="/" className="flex items-center gap-2.5 z-[130]" onClick={() => setIsMobileMenuOpen(false)}>
+          <div className="h-8 w-8">
+            <img src={isMobileMenuOpen || theme === 'dark' ? "/logo-white.png" : "/logo-black.png"} alt="ImpactQuest" className="h-full w-full object-contain" />
+          </div>
+          <span className={cn(
+            "font-black text-xl tracking-tighter",
+            isMobileMenuOpen ? "text-white" : "text-foreground"
+          )}>ImpactQ</span>
+        </Link>
+
+        <button 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className={cn(
+            "h-12 w-12 flex items-center justify-center transition-all duration-300 z-[130]",
+            isMobileMenuOpen ? "text-white" : "text-foreground"
+          )}
+        >
+          {isMobileMenuOpen ? <Close size={28} /> : <Menu size={28} />}
+        </button>
       </div>
-    </motion.nav>
+
+      {/* Mobile Full-Screen Falling Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ y: "-100%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: "-100%", opacity: 0 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-[100] md:hidden bg-zinc-950 flex flex-col overflow-hidden text-white pt-24"
+          >
+            {/* Infinite Wheel List with List Item UI */}
+            <div className="flex-1 relative overflow-hidden flex flex-col justify-start mt-4">
+               {/* Edge Masks */}
+               <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-zinc-950 to-transparent z-20 pointer-events-none" />
+               <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-zinc-950 to-transparent z-20 pointer-events-none" />
+
+               <div className="h-full">
+                  <InfiniteWheel navItems={navItems} location={location} onSelect={() => setIsMobileMenuOpen(false)} />
+               </div>
+            </div>
+
+            {/* Menu Footer Redesign - Image Inspired */}
+            <div className="mt-auto relative z-10 border-t border-white/10">
+               {/* Info Strip */}
+               <div className="px-8 py-4 flex items-center justify-between text-white/20 text-[9px] font-black uppercase tracking-[0.4em] border-b border-white/5">
+                  <span>2026</span>
+                  <div className="flex gap-6">
+                     <span className="cursor-pointer hover:text-white transition-colors">Privacy</span>
+                     <span className="cursor-pointer hover:text-white transition-colors">Terms</span>
+                  </div>
+               </div>
+
+               {/* Auth Bar */}
+               <div className="border-t border-white/10 grid grid-cols-2 h-20 bg-zinc-950">
+                  <Link 
+                     to="/signin" 
+                     onClick={() => setIsMobileMenuOpen(false)}
+                     className="flex items-center justify-center border-r border-white/10 text-xl font-medium tracking-tighter uppercase hover:bg-white/5 transition-colors"
+                  >
+                     Log In
+                  </Link>
+                  <Link 
+                     to="/signin" 
+                     onClick={() => setIsMobileMenuOpen(false)}
+                     className="flex items-center justify-center text-xl font-medium tracking-tighter uppercase hover:bg-white/5 transition-colors"
+                  >
+                     Sign Up
+                  </Link>
+               </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }
 

@@ -63,95 +63,131 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       className="fixed inset-0 z-[9999] bg-[#030303] flex flex-col items-center justify-center overflow-hidden"
       style={{ fontFamily: "'Space Grotesk', sans-serif" }}
     >
-      {/* Absolute Minimalist Center */}
-      <div className="relative flex flex-col items-center gap-20 w-full max-w-xl">
-         
-         {/* Letter-by-Letter Staggered Blur Reveal */}
+      {/* MOBILE UI: Circular Loader */}
+      <div className="md:hidden relative flex flex-col items-center justify-center w-full">
+         <div className="relative flex items-center justify-center p-20">
+            {/* Background Circle */}
+            <svg className="absolute inset-0 w-full h-full -rotate-90 overflow-visible opacity-5">
+               <circle cx="50%" cy="50%" r="48%" fill="none" stroke="white" strokeWidth="1" />
+            </svg>
+
+            {/* Active Progress Circle */}
+            <svg className="absolute inset-0 w-full h-full -rotate-90 overflow-visible">
+               <motion.circle
+                  cx="50%"
+                  cy="50%"
+                  r="48%"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: progress / 100 }}
+                  transition={{ duration: 0.2, ease: "linear" }}
+               />
+            </svg>
+
+            {/* Logo Text (Mobile Size) */}
+            <motion.div 
+              variants={container}
+              initial="hidden"
+              animate="visible"
+              className="flex items-center justify-center overflow-visible z-10"
+            >
+               {text.split("").map((char, i) => (
+                 <motion.span
+                   key={i}
+                   variants={letterVariant}
+                   className={cn(
+                     "text-4xl font-bold tracking-tighter text-white inline-block",
+                     i >= 6 ? "opacity-20 font-light" : "opacity-100"
+                   )}
+                 >
+                   {char}
+                 </motion.span>
+               ))}
+            </motion.div>
+
+            {/* Mobile Percentage */}
+            <div className="absolute bottom-10">
+              <span className="text-[8px] font-black text-white/20 uppercase tracking-[0.5em]">
+                {Math.round(progress)}%
+              </span>
+            </div>
+         </div>
+      </div>
+
+      {/* DESKTOP UI: Linear Loader (Previous Version) */}
+      <div className="hidden md:flex flex-col items-center gap-20 w-full max-w-4xl">
+         {/* Logo Text (Desktop Size) */}
          <motion.div 
-           variants={container}
-           initial="hidden"
-           animate="visible"
-           className="flex items-center justify-center overflow-visible"
+            variants={container}
+            initial="hidden"
+            animate="visible"
+            className="flex items-center justify-center overflow-visible"
          >
             {text.split("").map((char, i) => (
               <motion.span
                 key={i}
                 variants={letterVariant}
                 className={cn(
-                  "text-6xl md:text-8xl lg:text-[7rem] font-bold tracking-tighter text-white inline-block",
-                  i >= 6 ? "opacity-30 font-light" : "opacity-100" // "Quest" part
+                  "text-8xl lg:text-[7rem] font-bold tracking-tighter text-white inline-block",
+                  i >= 6 ? "opacity-30 font-light" : "opacity-100"
                 )}
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
               >
                 {char}
               </motion.span>
             ))}
          </motion.div>
 
-         {/* Intense White Glowy Progress Interface */}
-         <div className="w-full max-w-sm space-y-6">
+         {/* Linear Progress Interface */}
+         <div className="w-full max-w-md space-y-6">
             <div className="w-full h-1.5 bg-white/5 rounded-full relative overflow-hidden backdrop-blur-sm">
-               {/* Core White Bar */}
                <motion.div 
                   className="absolute inset-y-0 left-0 rounded-full z-10"
                   style={{ backgroundColor: "#ffffff" }}
                   initial={{ width: "0%" }}
                   animate={{ width: `${progress}%` }}
                />
-               
-               {/* Primary White Plasma Glow */}
                <motion.div 
                   className="absolute inset-y-0 left-0 blur-md opacity-70 rounded-full"
                   style={{ backgroundColor: "#ffffff" }}
                   initial={{ width: "0%" }}
                   animate={{ width: `${progress}%` }}
                />
-               
-               {/* Secondary Atmospheric Bloom */}
                <motion.div 
                   className="absolute inset-y-0 left-0 blur-xl opacity-30 rounded-full"
                   style={{ backgroundColor: "#ffffff" }}
                   initial={{ width: "0%" }}
                   animate={{ width: `${progress}%` }}
                />
-               
-               {/* Inner Specular Highlight */}
-               <motion.div 
-                  className="absolute inset-x-0 top-0.5 h-[1px] rounded-full mx-2"
-                  style={{ backgroundColor: "rgba(255, 255, 255, 0.4)" }}
-                  initial={{ width: "0%" }}
-                  animate={{ width: `${progress - 5}%` }}
-               />
             </div>
             
-            {/* Minimalist Tech Stats */}
             <div className="flex justify-between items-center px-1">
                <div className="flex items-center gap-3">
                   <div 
                     className="h-1.5 w-1.5 rounded-full animate-pulse" 
                     style={{ backgroundColor: "#ffffff", boxShadow: "0 0 8px #ffffff" }}
                   />
-                  <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em] leading-none">{Math.round(progress)}% Integrated</span>
+                  <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em] leading-none">
+                    {Math.round(progress)}% Integrated
+                  </span>
                </div>
-               <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.4em] leading-none">v4.0.1 Stable</span>
+               <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.4em] leading-none">
+                 v4.0.1 Stable
+               </span>
             </div>
          </div>
       </div>
 
-       {/* Floating Decal */}
-       <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.15 }}
-        transition={{ delay: 2.5 }}
-        className="absolute bottom-20"
-      >
-         <div className="h-1 w-1 bg-white rounded-full shadow-[0_0_10px_white]" />
-      </motion.div>
+      {/* Shared Ambient Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.02)_0%,transparent_70%)] pointer-events-none" />
     </motion.div>
   )
 }
 
-// Minimal utility if not imported
 function cn(...classes: any[]) {
   return classes.filter(Boolean).join(' ')
 }
+
+
