@@ -14,15 +14,21 @@ import {
   RocketIcon as Rocket,
   Add01Icon as Plus,
   ArrowLeft01Icon as ArrowLeft,
-  ChampionIcon as Trophy,
-  Chat01Icon as Message,
-  PackageIcon as Inventory,
-  UserGroupIcon as Users,
-  Map01Icon as MapIcon,
-  Energy01Icon as Energy
+  ChampionIcon,
+  Chat01Icon,
+  PackageIcon,
+  Map01Icon,
+  Energy01Icon
 } from "hugeicons-react"
 import { cn } from "@/lib/utils"
 import { Link } from "react-router-dom"
+
+// Icon Helpers (Must be defined before updates array)
+const Trophy = ChampionIcon;
+const Message = Chat01Icon;
+const Inventory = PackageIcon;
+const MapIcon = Map01Icon;
+const Energy = Energy01Icon;
 
 const updates = [
   {
@@ -159,13 +165,6 @@ const updates = [
     ]
   }
 ];
-
-// Helper to match icon names from hugeicons-react
-const ChampionIcon = Trophy;
-const Map01Icon = MapIcon;
-const Energy01Icon = Energy;
-const PackageIcon = Inventory;
-const Chat01Icon = Message;
 
 export default function ChangelogPage() {
   return (
