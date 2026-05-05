@@ -32,13 +32,53 @@ export default function ContactPage() {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitting(true)
-    setTimeout(() => {
-      setSubmitting(false)
+
+    try {
+      // 1. Send to Formcarry
+      const FORMCARRY_ID = import.meta.env.VITE_FORMCARRY_ID;
+      if (FORMCARRY_ID) {
+        await fetch(`https://formcarry.com/s/${FORMCARRY_ID}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify(form)
+        });
+      }
+
+      // 2. Send via EmailJS
+      const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+      if (SERVICE_ID && TEMPLATE_ID && PUBLIC_KEY) {
+        const emailjs = await import('@emailjs/browser');
+        await emailjs.default.send(
+          SERVICE_ID, 
+          TEMPLATE_ID, 
+          {
+            from_name: form.name,
+            from_email: form.email,
+            role: form.role,
+            message: form.message,
+            to_name: 'ImpactQuest Team',
+          },
+          PUBLIC_KEY
+        );
+      }
+
       setSuccess(true)
-    }, 2000)
+      setForm({ name: '', email: '', role: 'Volunteer', message: '' })
+    } catch (error) {
+      console.error("Submission failed:", error)
+      alert("Something went wrong. Please try again later.")
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
