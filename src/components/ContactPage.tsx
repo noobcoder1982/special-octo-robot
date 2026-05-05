@@ -57,7 +57,6 @@ export default function ContactPage() {
       }
 
       // 2. Send via EmailJS (This notifies YOU, the admin)
-      const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
       const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
       const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
