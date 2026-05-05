@@ -62,13 +62,10 @@ export default function ContactPage() {
         console.log("Formcarry submission successful!");
       }
 
-      // 2. Send via EmailJS (TWO EMAILS)
-      const THANK_YOU_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_THANK_YOU_TEMPLATE_ID;
-
+      // 2. Send via EmailJS
       if (SERVICE_ID && TEMPLATE_ID && PUBLIC_KEY) {
         const emailjs = await import('@emailjs/browser');
         
-        // EMAIL A: Notification to YOU (The Admin)
         await emailjs.default.send(
           SERVICE_ID, 
           TEMPLATE_ID, 
@@ -83,23 +80,7 @@ export default function ContactPage() {
           },
           PUBLIC_KEY
         );
-        console.log("Admin notification sent!");
-
-        // EMAIL B: Thank You to THEM (The Sender)
-        if (THANK_YOU_TEMPLATE_ID) {
-          await emailjs.default.send(
-            SERVICE_ID, 
-            THANK_YOU_TEMPLATE_ID, 
-            {
-              name: form.name,
-              role: form.role,
-              message: form.message,
-              to_email: form.email, // This sends it to the person who filled the form!
-            },
-            PUBLIC_KEY
-          );
-          console.log("Thank you email sent to user!");
-        }
+        console.log("Notification sent successfully!");
       }
 
       setSuccess(true)
