@@ -37,8 +37,14 @@ export default function ContactPage() {
     setSubmitting(true)
 
     try {
-      // 1. Send to Formcarry (This triggers their Auto-Reply to the NGO)
+      console.log("Checking environment variables...");
       const FORMCARRY_ID = import.meta.env.VITE_FORMCARRY_ID;
+      const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      
+      console.log("VITE_FORMCARRY_ID defined:", !!FORMCARRY_ID);
+      console.log("VITE_EMAILJS_SERVICE_ID defined:", !!SERVICE_ID);
+
+      // 1. Send to Formcarry (This triggers their Auto-Reply to the NGO)
       if (FORMCARRY_ID) {
         await fetch(`https://formcarry.com/s/${FORMCARRY_ID}`, {
           method: "POST",
