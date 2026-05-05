@@ -37,7 +37,7 @@ export default function ContactPage() {
     setSubmitting(true)
 
     try {
-      // 1. Send to Formcarry
+      // 1. Send to Formcarry (This triggers their Auto-Reply to the NGO)
       const FORMCARRY_ID = import.meta.env.VITE_FORMCARRY_ID;
       if (FORMCARRY_ID) {
         await fetch(`https://formcarry.com/s/${FORMCARRY_ID}`, {
@@ -50,7 +50,7 @@ export default function ContactPage() {
         });
       }
 
-      // 2. Send via EmailJS
+      // 2. Send via EmailJS (This notifies YOU, the admin)
       const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
       const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
       const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
@@ -66,6 +66,9 @@ export default function ContactPage() {
             role: form.role,
             message: form.message,
             to_name: 'ImpactQuest Team',
+            // Adding these to help EmailJS templates
+            to_email: 'abhijeetpanda21@gmail.com', // YOUR email to receive the notification
+            reply_to: form.email, // So you can reply directly to the NGO
           },
           PUBLIC_KEY
         );
