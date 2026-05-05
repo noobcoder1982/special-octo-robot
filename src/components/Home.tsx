@@ -125,10 +125,10 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="flex flex-col sm:flex-row items-center gap-6 md:gap-8 mb-20 md:mb-24 relative z-20 w-full max-w-xs sm:max-w-none px-6 sm:px-0"
+          className="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-8 mb-20 md:mb-24 relative z-20"
         >
           <Link to="/signin" className="w-full sm:w-auto">
-            <Button className="w-full h-18 md:h-20 px-10 md:px-12 rounded-2xl md:rounded-[2.5rem] bg-indigo-600 text-white text-lg md:text-xl font-black gap-4 hover:bg-indigo-700 transition-all shadow-2xl shadow-indigo-600/20 active:scale-95 leading-none">
+            <Button className="w-full sm:w-auto h-16 md:h-20 px-10 md:px-12 rounded-2xl md:rounded-[2.5rem] bg-indigo-600 text-white text-lg md:text-xl font-black gap-4 hover:bg-indigo-700 transition-all shadow-2xl shadow-indigo-600/20 active:scale-95 leading-none">
                 Deploy <ArrowRight className="h-5 w-5" />
             </Button>
           </Link>

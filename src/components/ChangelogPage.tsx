@@ -182,6 +182,12 @@ export default function ChangelogPage() {
       {/* Hero */}
       <section className="px-6 md:px-12 pt-36 pb-16 max-w-4xl mx-auto">
         <motion.div {...fadeUp} className="space-y-6">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-indigo-600 transition-colors"
+          >
+            <ArrowRight className="h-4 w-4 rotate-180" /> Back to home
+          </Link>
           <span className="inline-flex items-center gap-2 text-indigo-600 text-[10px] font-bold uppercase tracking-widest">
             <Clock className="h-3.5 w-3.5" /> Development Log
           </span>
