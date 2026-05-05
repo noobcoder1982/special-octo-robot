@@ -37,16 +37,16 @@ export default function ContactPage() {
     setSubmitting(true)
 
     try {
-      console.log("Checking environment variables...");
       const FORMCARRY_ID = import.meta.env.VITE_FORMCARRY_ID;
       const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-      
-      console.log("VITE_FORMCARRY_ID defined:", !!FORMCARRY_ID);
-      console.log("VITE_EMAILJS_SERVICE_ID defined:", !!SERVICE_ID);
+      const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-      // 1. Send to Formcarry (This triggers their Auto-Reply to the NGO)
+      console.log("Submitting to Formcarry with ID:", FORMCARRY_ID ? "Found" : "MISSING");
+
+      // 1. Send to Formcarry
       if (FORMCARRY_ID) {
-        await fetch(`https://formcarry.com/s/${FORMCARRY_ID}`, {
+        const fcResponse = await fetch(`https://formcarry.com/s/${FORMCARRY_ID}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -54,14 +54,21 @@ export default function ContactPage() {
           },
           body: JSON.stringify(form)
         });
+        
+        if (!fcResponse.ok) {
+          const errData = await fcResponse.json();
+          throw new Error(`Formcarry Error: ${errData.message || fcResponse.statusText}`);
+        }
+        console.log("Formcarry submission successful!");
       }
 
-      // 2. Send via EmailJS (This notifies YOU, the admin)
-      const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-      const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+      // 2. Send via EmailJS (TWO EMAILS)
+      const THANK_YOU_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_THANK_YOU_TEMPLATE_ID;
 
       if (SERVICE_ID && TEMPLATE_ID && PUBLIC_KEY) {
         const emailjs = await import('@emailjs/browser');
+        
+        // EMAIL A: Notification to YOU (The Admin)
         await emailjs.default.send(
           SERVICE_ID, 
           TEMPLATE_ID, 
@@ -71,19 +78,35 @@ export default function ContactPage() {
             role: form.role,
             message: form.message,
             to_name: 'ImpactQuest Team',
-            // Adding these to help EmailJS templates
-            to_email: 'abhijeetpanda21@gmail.com', // YOUR email to receive the notification
-            reply_to: form.email, // So you can reply directly to the NGO
+            to_email: 'abhijeetpanda21@gmail.com',
+            reply_to: form.email,
           },
           PUBLIC_KEY
         );
+        console.log("Admin notification sent!");
+
+        // EMAIL B: Thank You to THEM (The Sender)
+        if (THANK_YOU_TEMPLATE_ID) {
+          await emailjs.default.send(
+            SERVICE_ID, 
+            THANK_YOU_TEMPLATE_ID, 
+            {
+              name: form.name,
+              role: form.role,
+              message: form.message,
+              to_email: form.email, // This sends it to the person who filled the form!
+            },
+            PUBLIC_KEY
+          );
+          console.log("Thank you email sent to user!");
+        }
       }
 
       setSuccess(true)
       setForm({ name: '', email: '', role: 'Volunteer', message: '' })
-    } catch (error) {
+    } catch (error: any) {
       console.error("Submission failed:", error)
-      alert("Something went wrong. Please try again later.")
+      alert(`Submission Error: ${error.message || "Please try again later."}`)
     } finally {
       setSubmitting(false)
     }
